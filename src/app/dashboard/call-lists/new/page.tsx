@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { requireAdminSession } from "@/lib/session";
-import { createCallListAction } from "@/lib/actions/call-lists";
+import { createCallListAction, importCallListCsvAction } from "@/lib/actions/call-lists";
 import { CallListLeadPicker, type PickableLead } from "@/components/leads/call-list-lead-picker";
 import { PageHeader, Card, Input, Select, Button } from "@/components/ui/primitives";
 
@@ -64,7 +64,17 @@ export default async function NewCallListPage({
         <Card className="max-w-3xl p-6">
           {error === "missing_fields" && (
             <p className="mb-4 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
-              Give the list a name and select at least one lead.
+              Give the list a name and select at least one lead (or a CSV file).
+            </p>
+          )}
+          {error === "empty_csv" && (
+            <p className="mb-4 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
+              That CSV didn&apos;t have any usable rows. Check the file and try again.
+            </p>
+          )}
+          {error === "no_name_column" && (
+            <p className="mb-4 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
+              Couldn&apos;t find a name/business/company column in that CSV&apos;s header row.
             </p>
           )}
           <div className="mb-5">
@@ -102,6 +112,45 @@ export default async function NewCallListPage({
 
             <div className="flex justify-end gap-2 border-t border-border pt-4">
               <Button type="submit">Create call list</Button>
+            </div>
+          </form>
+        </Card>
+
+        <Card className="mt-5 max-w-3xl p-6">
+          <h2 className="mb-1 text-sm font-semibold text-fg">Import from CSV</h2>
+          <p className="mb-4 text-xs text-fg-muted">
+            Header row required. Recognized columns: <code>name</code> (required), <code>phone</code>,{" "}
+            <code>email</code>, <code>website</code>, <code>city</code>, <code>state</code>. Businesses that don&apos;t
+            already exist as a lead are created automatically.
+          </p>
+          <form action={importCallListCsvAction} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Field label="List name" required>
+              <Input name="name" placeholder="Imported list" required />
+            </Field>
+            <Field label="Date">
+              <Input name="forDate" type="date" defaultValue={today} />
+            </Field>
+            <Field label="Assign to">
+              <Select name="assignedToId" defaultValue="">
+                <option value="">Unassigned</option>
+                {team.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name || u.email}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field label="CSV file" required>
+              <input
+                type="file"
+                name="file"
+                accept=".csv,text/csv"
+                required
+                className="block w-full text-sm text-fg-muted file:mr-3 file:rounded-lg file:border-0 file:bg-brand file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-brand-fg"
+              />
+            </Field>
+            <div className="flex items-end sm:col-span-2 sm:justify-end">
+              <Button type="submit">Import &amp; create list</Button>
             </div>
           </form>
         </Card>
