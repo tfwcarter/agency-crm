@@ -28,6 +28,12 @@ export type CallListItemData = {
   };
 };
 
+function googleVoiceCallUrl(phone: string): string {
+  const digits = phone.replace(/[^\d+]/g, "");
+  const e164 = digits.startsWith("+") ? digits : `+1${digits.replace(/^1/, "")}`;
+  return `https://voice.google.com/u/0/calls?a=nc,${e164}`;
+}
+
 const STATUS_OPTIONS: { value: string; label: string; tone: "success" | "warning" | "danger" | "brand" | "default" }[] = [
   { value: "called", label: "Called", tone: "brand" },
   { value: "no_answer", label: "No Answer", tone: "warning" },
@@ -109,7 +115,7 @@ export function CallListItemRow({
 
         <div className="flex shrink-0 items-center gap-1.5">
           {item.lead.phone && (
-            <a href={`tel:${item.lead.phone}`}>
+            <a href={googleVoiceCallUrl(item.lead.phone)} target="_blank" rel="noopener noreferrer">
               <Button type="button" size="sm" variant="accent">
                 <Phone size={12} /> Call
               </Button>
