@@ -100,6 +100,16 @@ export async function updateInvoiceStatusAction(id: string, status: string) {
   revalidatePath("/dashboard/invoices");
 }
 
+export async function deleteInvoiceAction(id: string) {
+  const session = await requireSession();
+  const invoice = await db.invoice.findFirst({ where: { id, organizationId: session.user.organizationId } });
+  if (!invoice || invoice.status === "paid") return;
+
+  await db.invoice.delete({ where: { id } });
+  revalidatePath("/dashboard/invoices");
+  redirect("/dashboard/invoices");
+}
+
 export async function signInvoiceAction(id: string, formData: FormData) {
   const signedByName = formData.get("signedByName") as string;
   if (!signedByName?.trim()) return;

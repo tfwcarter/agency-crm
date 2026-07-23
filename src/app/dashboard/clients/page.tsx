@@ -3,6 +3,8 @@ import { Plus, Building2 } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 import { PageHeader, Card, Badge, Button } from "@/components/ui/primitives";
+import { ConfirmDeleteButton } from "@/components/ui/confirm-delete-button";
+import { deleteClientAction } from "@/lib/actions/clients";
 import { formatCurrency, initials } from "@/lib/utils";
 
 const STATUS_TONE = { active: "success", paused: "warning", churned: "danger" } as const;
@@ -74,6 +76,7 @@ export default async function ClientsPage({
                   <th className="px-4 py-3 font-medium">Monthly Spend</th>
                   <th className="px-4 py-3 font-medium">Account Manager</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium"></th>
                 </tr>
               </thead>
               <tbody>
@@ -104,6 +107,13 @@ export default async function ClientsPage({
                       <Badge tone={STATUS_TONE[client.status as keyof typeof STATUS_TONE] ?? "default"}>
                         {client.status}
                       </Badge>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <ConfirmDeleteButton
+                        action={deleteClientAction.bind(null, client.id)}
+                        confirmMessage={`Delete "${client.businessName}"? This permanently deletes their projects, files, invoices, notes, and contacts. This can't be undone.`}
+                        iconOnly
+                      />
                     </td>
                   </tr>
                 ))}

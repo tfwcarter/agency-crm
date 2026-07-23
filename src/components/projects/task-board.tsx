@@ -12,7 +12,8 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import { moveProjectTaskAction } from "@/lib/actions/projects";
+import { Trash2 } from "lucide-react";
+import { moveProjectTaskAction, deleteProjectTaskAction } from "@/lib/actions/projects";
 
 type Task = { id: string; title: string; status: string };
 
@@ -46,11 +47,25 @@ export function TaskBoard({ tasks }: { tasks: Task[] }) {
     });
   }
 
+  function handleDelete(taskId: string) {
+    if (!window.confirm("Delete this task?")) return;
+    setLocalTasks((prev) => prev.filter((t) => t.id !== taskId));
+    startTransition(() => {
+      deleteProjectTaskAction(taskId);
+    });
+  }
+
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {COLUMNS.map((col) => (
-          <Column key={col.id} id={col.id} label={col.label} tasks={localTasks.filter((t) => t.status === col.id)} />
+          <Column
+            key={col.id}
+            id={col.id}
+            label={col.label}
+            tasks={localTasks.filter((t) => t.status === col.id)}
+            onDelete={handleDelete}
+          />
         ))}
       </div>
       <DragOverlay>{activeTask && <TaskCard task={activeTask} overlay />}</DragOverlay>
@@ -58,7 +73,17 @@ export function TaskBoard({ tasks }: { tasks: Task[] }) {
   );
 }
 
-function Column({ id, label, tasks }: { id: string; label: string; tasks: Task[] }) {
+function Column({
+  id,
+  label,
+  tasks,
+  onDelete,
+}: {
+  id: string;
+  label: string;
+  tasks: Task[];
+  onDelete: (taskId: string) => void;
+}) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
     <div
@@ -70,29 +95,43 @@ function Column({ id, label, tasks }: { id: string; label: string; tasks: Task[]
       </div>
       <div className="flex-1 space-y-2 p-2">
         {tasks.map((task) => (
-          <DraggableTask key={task.id} task={task} />
+          <DraggableTask key={task.id} task={task} onDelete={onDelete} />
         ))}
       </div>
     </div>
   );
 }
 
-function DraggableTask({ task }: { task: Task }) {
+function DraggableTask({ task, onDelete }: { task: Task; onDelete: (taskId: string) => void }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id });
   const style = transform
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, opacity: isDragging ? 0.4 : 1 }
     : undefined;
   return (
     <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-      <TaskCard task={task} />
+      <TaskCard task={task} onDelete={onDelete} />
     </div>
   );
 }
 
-function TaskCard({ task, overlay }: { task: Task; overlay?: boolean }) {
+function TaskCard({ task, overlay, onDelete }: { task: Task; overlay?: boolean; onDelete?: (taskId: string) => void }) {
   return (
-    <div className={`cursor-grab rounded-lg border border-border bg-bg p-2.5 text-sm text-fg active:cursor-grabbing ${overlay ? "rotate-2 shadow-2xl" : ""}`}>
-      {task.title}
+    <div className={`group flex cursor-grab items-center justify-between gap-2 rounded-lg border border-border bg-bg p-2.5 text-sm text-fg active:cursor-grabbing ${overlay ? "rotate-2 shadow-2xl" : ""}`}>
+      <span className="min-w-0 flex-1">{task.title}</span>
+      {onDelete && (
+        <button
+          type="button"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(task.id);
+          }}
+          className="shrink-0 text-fg-subtle opacity-0 hover:text-danger group-hover:opacity-100"
+          title="Delete task"
+        >
+          <Trash2 size={13} />
+        </button>
+      )}
     </div>
   );
 }

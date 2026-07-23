@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { del } from "@vercel/blob";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 
@@ -88,6 +89,35 @@ export async function addProjectTaskAction(projectId: string, formData: FormData
 export async function moveProjectTaskAction(taskId: string, status: string) {
   const task = await db.projectTask.update({ where: { id: taskId }, data: { status }, include: { project: true } });
   revalidatePath(`/dashboard/projects/${task.projectId}`);
+}
+
+export async function deleteProjectTaskAction(taskId: string) {
+  const session = await requireSession();
+  const task = await db.projectTask.findFirst({
+    where: { id: taskId, project: { organizationId: session.user.organizationId } },
+  });
+  if (!task) return;
+
+  await db.projectTask.delete({ where: { id: taskId } });
+  revalidatePath(`/dashboard/projects/${task.projectId}`);
+}
+
+export async function deleteProjectAction(projectId: string) {
+  const session = await requireSession();
+  const project = await db.project.findFirst({
+    where: { id: projectId, organizationId: session.user.organizationId },
+    include: { files: true },
+  });
+  if (!project) return;
+
+  const blobFiles = project.files.filter((f) => f.path.startsWith("https://"));
+  if (blobFiles.length > 0 && process.env.BLOB_READ_WRITE_TOKEN) {
+    await Promise.all(blobFiles.map((f) => del(f.path).catch(() => {})));
+  }
+
+  await db.project.delete({ where: { id: projectId } });
+  revalidatePath("/dashboard/projects");
+  redirect("/dashboard/projects");
 }
 
 export async function addProjectCommentAction(projectId: string, formData: FormData) {

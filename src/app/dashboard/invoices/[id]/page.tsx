@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { FileDown } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
-import { updateInvoiceStatusAction, signInvoiceAction } from "@/lib/actions/invoices";
+import { updateInvoiceStatusAction, signInvoiceAction, deleteInvoiceAction } from "@/lib/actions/invoices";
 import { PageHeader, Card, Badge, Button, Input } from "@/components/ui/primitives";
+import { ConfirmDeleteButton } from "@/components/ui/confirm-delete-button";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 const STATUS_TONE = { draft: "default", sent: "brand", viewed: "brand", paid: "success", overdue: "danger", void: "danger" } as const;
@@ -114,6 +115,15 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                     Void
                   </Button>
                 </form>
+              )}
+              {invoice.status !== "paid" && (
+                <ConfirmDeleteButton
+                  action={deleteInvoiceAction.bind(null, invoice.id)}
+                  confirmMessage={`Delete ${invoice.number}? This can't be undone.`}
+                  label="Delete"
+                  size="sm"
+                  className="w-full"
+                />
               )}
             </div>
             {!stripeConfigured && (

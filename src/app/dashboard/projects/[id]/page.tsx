@@ -3,10 +3,11 @@ import { notFound } from "next/navigation";
 import { Upload, Trash2 } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
-import { updateProjectStatusAction, updateProjectProgressAction, addProjectTaskAction, addProjectCommentAction, logProjectTimeAction } from "@/lib/actions/projects";
+import { updateProjectStatusAction, updateProjectProgressAction, addProjectTaskAction, addProjectCommentAction, logProjectTimeAction, deleteProjectAction } from "@/lib/actions/projects";
 import { uploadFileAction, deleteFileAction } from "@/lib/actions/files";
 import { TaskBoard } from "@/components/projects/task-board";
 import { PageHeader, Card, Badge, Button, Input, Textarea } from "@/components/ui/primitives";
+import { ConfirmDeleteButton } from "@/components/ui/confirm-delete-button";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -40,21 +41,27 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </Link>
         }
         action={
-          <form action={setStatus} className="flex items-center gap-2">
-            <select
-              name="status"
-              defaultValue={project.status}
-              className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-fg outline-none focus:border-brand"
-            >
-              <option value="active">Active</option>
-              <option value="on_hold">On Hold</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-            <Button type="submit" size="sm" variant="secondary">
-              Update
-            </Button>
-          </form>
+          <div className="flex items-center gap-2">
+            <form action={setStatus} className="flex items-center gap-2">
+              <select
+                name="status"
+                defaultValue={project.status}
+                className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-fg outline-none focus:border-brand"
+              >
+                <option value="active">Active</option>
+                <option value="on_hold">On Hold</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <Button type="submit" size="sm" variant="secondary">
+                Update
+              </Button>
+            </form>
+            <ConfirmDeleteButton
+              action={deleteProjectAction.bind(null, project.id)}
+              confirmMessage={`Delete "${project.name}"? This permanently deletes its tasks, comments, files, and time entries. This can't be undone.`}
+            />
+          </div>
         }
       />
 

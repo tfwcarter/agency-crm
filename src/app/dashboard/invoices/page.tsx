@@ -3,6 +3,8 @@ import { Plus, Receipt } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
 import { PageHeader, Card, Badge, Button } from "@/components/ui/primitives";
+import { ConfirmDeleteButton } from "@/components/ui/confirm-delete-button";
+import { deleteInvoiceAction } from "@/lib/actions/invoices";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 const STATUS_TONE = { draft: "default", sent: "brand", viewed: "brand", paid: "success", overdue: "danger", void: "danger" } as const;
@@ -57,6 +59,7 @@ export default async function InvoicesPage() {
                   <th className="px-4 py-3 font-medium">Total</th>
                   <th className="px-4 py-3 font-medium">Due</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium"></th>
                 </tr>
               </thead>
               <tbody>
@@ -74,6 +77,15 @@ export default async function InvoicesPage() {
                     <td className="px-4 py-3 text-fg-muted">{inv.dueDate ? formatDate(inv.dueDate) : "—"}</td>
                     <td className="px-4 py-3">
                       <Badge tone={STATUS_TONE[inv.status as keyof typeof STATUS_TONE] ?? "default"}>{inv.status}</Badge>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {inv.status !== "paid" && (
+                        <ConfirmDeleteButton
+                          action={deleteInvoiceAction.bind(null, inv.id)}
+                          confirmMessage={`Delete ${inv.number}? This can't be undone.`}
+                          iconOnly
+                        />
+                      )}
                     </td>
                   </tr>
                 ))}

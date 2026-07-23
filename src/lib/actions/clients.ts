@@ -174,6 +174,19 @@ export async function addServiceAction(clientId: string, formData: FormData) {
   revalidatePath(`/dashboard/clients/${clientId}`);
 }
 
+export async function deleteClientAction(clientId: string) {
+  const session = await requireSession();
+  await db.client.delete({ where: { id: clientId, organizationId: session.user.organizationId } });
+  revalidatePath("/dashboard/clients");
+  redirect("/dashboard/clients");
+}
+
+export async function removeServiceAction(clientId: string, serviceId: string) {
+  await requireSession();
+  await db.clientService.delete({ where: { id: serviceId, clientId } });
+  revalidatePath(`/dashboard/clients/${clientId}`);
+}
+
 export async function addClientNoteAction(clientId: string, formData: FormData) {
   const session = await requireSession();
   const body = formData.get("body");

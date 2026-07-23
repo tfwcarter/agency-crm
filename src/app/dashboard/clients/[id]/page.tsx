@@ -16,13 +16,15 @@ import {
   FolderOpen,
   MessagesSquare,
   BarChart3,
+  Trash2,
 } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
-import { addClientNoteAction, addContactAction, addServiceAction } from "@/lib/actions/clients";
+import { addClientNoteAction, addContactAction, addServiceAction, deleteClientAction, removeServiceAction } from "@/lib/actions/clients";
 import { enablePortalAction, disablePortalAction } from "@/lib/actions/client-portal";
 import { uploadFileAction, deleteFileAction } from "@/lib/actions/files";
 import { PageHeader, Card, Badge, Button, Input, Textarea } from "@/components/ui/primitives";
+import { ConfirmDeleteButton } from "@/components/ui/confirm-delete-button";
 import { Tabs, type TabDef } from "@/components/ui/tabs";
 import { formatCurrency, formatDate, initials } from "@/lib/utils";
 
@@ -309,7 +311,14 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                 {client.services.map((s) => (
                   <div key={s.id} className="flex items-center justify-between rounded-lg border border-border px-3 py-2">
                     <span className="text-sm text-fg">{s.name}</span>
-                    <span className="text-sm text-fg-muted">{formatCurrency(s.price)}/mo</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-fg-muted">{formatCurrency(s.price)}/mo</span>
+                      <form action={removeServiceAction.bind(null, client.id, s.id)}>
+                        <button type="submit" className="text-fg-subtle hover:text-danger" title="Remove campaign">
+                          <Trash2 size={14} />
+                        </button>
+                      </form>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -502,6 +511,10 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                 <Pencil size={13} /> Edit
               </Button>
             </Link>
+            <ConfirmDeleteButton
+              action={deleteClientAction.bind(null, client.id)}
+              confirmMessage={`Delete "${client.businessName}"? This permanently deletes their projects, files, invoices, notes, and contacts. This can't be undone.`}
+            />
           </div>
         }
       />
