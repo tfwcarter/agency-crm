@@ -1,0 +1,690 @@
+// Agency CRM — core data model.
+// SQLite for local dev; swap datasource provider to "postgresql" + DATABASE_URL for production.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Optional per-org API keys, settable from Settings in the app — no .env editing or
+  // server restart required. Falls back to the matching env var when not set here.
+  groqApiKey        String?
+  anthropicApiKey   String?
+  pagespeedApiKey   String?
+  stripeSecretKey   String?
+  googlePlacesApiKey String?
+  tomtomApiKey       String?
+
+  users         User[]
+  clients       Client[]
+  stages        PipelineStage[]
+  deals         Deal[]
+  notes         Note[]
+  activities    Activity[]
+  leads         Lead[]
+  websiteAudits WebsiteAudit[]
+  projects      Project[]
+  files         FileAsset[]
+  appointments  Appointment[]
+  invoices      Invoice[]
+  automations   AutomationRule[]
+  websites      Website[]
+  timeEntries   TimeEntry[]
+  announcements Announcement[]
+  aiGenerations AiGeneration[]
+  smartLists    SmartList[]
+  callLists     CallList[]
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  name           String?
+  role           String   @default("owner") // owner | admin | member
+  jobTitle       String?
+  commissionRate Float    @default(0) // percent of won deal value
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+
+  managedClients Client[]        @relation("AccountManager")
+  ownedDeals     Deal[]          @relation("DealOwner")
+  notes          Note[]
+  activities     Activity[]
+  ownedLeads     Lead[]          @relation("LeadOwner")
+  assignedAppts  Appointment[]   @relation("ApptAssignee")
+  uploadedFiles  FileAsset[]
+  timeEntries    TimeEntry[]
+  announcements  Announcement[]
+  projectComments ProjectComment[]
+  createdCallLists  CallList[]     @relation("CallListCreator")
+  assignedCallLists CallList[]     @relation("CallListAssignee")
+  calledListItems   CallListItem[] @relation("CallListItemCaller")
+}
+
+model Client {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  businessName        String
+  contactName          String?
+  email                String?
+  phone                String?
+  website              String?
+  googleBusinessProfile String?
+  facebookUrl          String?
+  instagramUrl         String?
+  linkedinUrl          String?
+  industry             String?
+  address              String?
+  latitude             Float?
+  longitude            Float?
+
+  monthlyPackage String?
+  monthlySpend   Float    @default(0)
+  contractStart  DateTime?
+  contractEnd    DateTime?
+  status         String   @default("active") // active | paused | churned
+
+  accountManagerId String?
+  accountManager    User?   @relation("AccountManager", fields: [accountManagerId], references: [id])
+
+  // Client portal auth (separate credentials from staff Users)
+  portalEmail        String? @unique
+  portalPasswordHash String?
+  portalEnabled      Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contacts     Contact[]
+  deals        Deal[]
+  notes        Note[]
+  activities   Activity[]
+  services     ClientService[]
+  projects     Project[]
+  files        FileAsset[]
+  appointments Appointment[]
+  invoices     Invoice[]
+  websites     Website[]
+  websiteAudits WebsiteAudit[]
+  timeEntries  TimeEntry[]
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  name  String
+  email String?
+  phone String?
+  title String?
+
+  createdAt DateTime @default(now())
+}
+
+model ClientService {
+  id       String @id @default(cuid())
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  name  String // e.g. "SEO", "Google Ads", "Website", "Branding"
+  price Float  @default(0)
+
+  createdAt DateTime @default(now())
+}
+
+model PipelineStage {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name  String
+  order Int
+  color String @default("#6366f1")
+
+  deals Deal[]
+}
+
+model Deal {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  title      String
+  value      Float   @default(0)
+  status     String  @default("open") // open | won | lost
+
+  stageId String
+  stage   PipelineStage @relation(fields: [stageId], references: [id])
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id])
+
+  ownerId String?
+  owner   User?   @relation("DealOwner", fields: [ownerId], references: [id])
+
+  source            String?
+  expectedCloseDate DateTime?
+  closedAt          DateTime?
+  lostReason        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notes      Note[]
+  activities Activity[]
+}
+
+model Note {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  body String
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  dealId String?
+  deal   Deal?   @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Activity {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  type        String // client_created | deal_created | deal_stage_changed | deal_won | deal_lost | note_added | lead_created | invoice_paid | appointment_booked | ...
+  description String
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  dealId String?
+  deal   Deal?   @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Lead {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  businessName String
+  ownerName    String?
+  phone        String?
+  email        String?
+  website      String?
+  address      String?
+  city         String?
+  state        String?
+  zip          String?
+  latitude     Float?
+  longitude    Float?
+  industry     String?
+
+  // Manual/optional — no free live source exists for these, never AI-guessed.
+  googleRating     Float?
+  googleReviews    Int?
+  estimatedRevenue String?
+  employees        String?
+
+  facebookUrl  String?
+  instagramUrl String?
+  linkedinUrl  String?
+  tiktokUrl    String?
+
+  speedScore       Int?
+  seoScore         Int?
+  mobileScore      Int?
+  designScore      Int?
+  leadScore        Int?
+  aiClosingChance  Int?
+  painPoints       String?
+  opportunityScore Int?
+
+  // Real, free, live-detected signals (see src/lib/enrichment/*)
+  techStackJson       String? // JSON array of detected tech (WordPress, Shopify, Cloudflare, ...)
+  hasSsl              Boolean?
+  hasGoogleAnalytics  Boolean?
+  hasGoogleTagManager Boolean?
+  hasMetaPixel        Boolean?
+  hasSchema           Boolean?
+  hasOpenGraph        Boolean?
+  hasFavicon          Boolean?
+  hasPrivacyPolicy    Boolean?
+  hasChatWidget       Boolean?
+  chatWidgetVendor    String?
+  hasTikTokPixel      Boolean?
+  hasLinkedInInsight  Boolean?
+  brokenLinkCount     Int?
+  copyrightYear       Int?
+  domainCreatedAt     DateTime?
+  dnsProvider         String? // inferred from NS records, e.g. "Cloudflare"
+  mxProvider          String? // inferred from MX records, e.g. "Google Workspace"
+  lastEnrichedAt      DateTime?
+
+  // Computed by src/lib/lead-scoring.ts — deterministic, regenerated on each enrichment
+  scoreBreakdownJson       String? // JSON array of {factor, points, detail}
+  labelsJson               String? // JSON array of smart label strings
+  recommendedServicesJson  String? // JSON array of recommended service strings
+  estimatedDealSetup       Float? // derived from this org's own historical closed deals
+  estimatedDealMonthly     Float?
+
+  favorited Boolean @default(false)
+
+  status String  @default("new") // new | contacted | qualified | converted | dead
+  source String  @default("manual") // manual | lead_finder
+  timeline String?
+
+  ownerId String?
+  owner   User?   @relation("LeadOwner", fields: [ownerId], references: [id])
+
+  convertedClientId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notes         Note[]
+  activities    Activity[]
+  websiteAudits WebsiteAudit[]
+  appointments  Appointment[]
+  websites      Website[]
+  callListItems CallListItem[]
+}
+
+model WebsiteAudit {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  url String
+
+  overallScore       Int
+  designScore        Int
+  seoScore           Int
+  speedScore         Int
+  mobileScore        Int
+  accessibilityScore Int
+
+  hasSSL              Boolean @default(false)
+  hasGoogleAnalytics  Boolean @default(false)
+  hasGoogleTagManager Boolean @default(false)
+  hasMetaPixel        Boolean @default(false)
+  hasTikTokPixel      Boolean @default(false)
+  hasLinkedInInsight  Boolean @default(false)
+  hasContactForm      Boolean @default(false)
+  hasBookingLink      Boolean @default(false)
+  hasViewportMeta     Boolean @default(false)
+  hasSchema           Boolean @default(false)
+  hasOpenGraph        Boolean @default(false)
+  hasFavicon          Boolean @default(false)
+  hasPrivacyPolicy    Boolean @default(false)
+  hasChatWidget       Boolean @default(false)
+  chatWidgetVendor    String?
+  brokenLinkCount     Int     @default(0)
+  copyrightYear       Int?
+  techStackJson       String? // JSON array of detected technologies
+  cfRay               Boolean @default(false)
+
+  findingsJson        String // JSON array of strings
+  recommendationsJson String // JSON array of strings
+  pitch                String? // AI-generated sales pitch
+
+  createdAt DateTime @default(now())
+}
+
+model Project {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  name   String
+  type   String // website | seo | google_ads | facebook_ads | branding | automation | landing_page | funnel | email_campaign
+  status String @default("active") // active | on_hold | completed | cancelled
+
+  budget      Float @default(0)
+  hoursLogged Float @default(0)
+  progress    Int   @default(0) // 0-100
+
+  startDate DateTime?
+  dueDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks     ProjectTask[]
+  comments  ProjectComment[]
+  files     FileAsset[]
+  timeEntries TimeEntry[]
+}
+
+model ProjectTask {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  title   String
+  status  String  @default("todo") // todo | in_progress | review | done
+  dueDate DateTime?
+  order   Int     @default(0)
+
+  createdAt DateTime @default(now())
+}
+
+model ProjectComment {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  body            String
+  isClientVisible Boolean @default(false)
+  isApproval      Boolean @default(false)
+  isRevisionRequest Boolean @default(false)
+
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id])
+  authorIsClient Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model FileAsset {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  clientId  String?
+  client    Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  name     String
+  path     String // relative path under /public/uploads
+  size     Int
+  mimeType String
+  version  Int    @default(1)
+
+  uploadedById String?
+  uploadedBy   User?   @relation(fields: [uploadedById], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Appointment {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  title    String
+  type     String // discovery_call | strategy_session | sales_call | onboarding | client_review
+  startAt  DateTime
+  endAt    DateTime
+  location String?
+  status   String  @default("scheduled") // scheduled | completed | cancelled | no_show
+
+  assignedToId String?
+  assignedTo   User?   @relation("ApptAssignee", fields: [assignedToId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  number String
+  type   String @default("invoice") // invoice | quote | contract
+  status String @default("draft") // draft | sent | viewed | paid | overdue | void
+
+  isRecurring       Boolean @default(false)
+  recurringInterval String? // weekly | monthly | yearly
+
+  subtotal Float @default(0)
+  tax      Float @default(0)
+  total    Float @default(0)
+
+  issueDate DateTime  @default(now())
+  dueDate   DateTime?
+  paidAt    DateTime?
+
+  signedByName String?
+  signedAt     DateTime?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lineItems InvoiceLineItem[]
+}
+
+model InvoiceLineItem {
+  id        String  @id @default(cuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  description String
+  quantity    Float @default(1)
+  unitPrice   Float @default(0)
+  order       Int   @default(0)
+}
+
+model AutomationRule {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name    String
+  trigger String // lead_created | client_created | deal_won | deal_lost | deal_stage_changed | invoice_paid | appointment_booked
+
+  actionType   String // create_task | log_activity | create_invoice_draft | flag_client_status
+  actionConfig String // JSON string of action params
+
+  enabled   Boolean   @default(true)
+  runCount  Int       @default(0)
+  lastRunAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  logs AutomationLog[]
+}
+
+model AutomationLog {
+  id     String @id @default(cuid())
+  ruleId String
+  rule   AutomationRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  result String // success | error
+  detail String?
+
+  createdAt DateTime @default(now())
+}
+
+model Website {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  businessName  String
+  industry      String?
+  tagline       String?
+  colorPrimary  String  @default("#6d5ef8")
+  status        String  @default("draft") // draft | generating | published
+
+  heroHeadline    String?
+  heroSubheadline String?
+  aboutContent    String?
+  servicesJson    String? // JSON array of {title, description}
+  contactContent  String?
+
+  publishedSlug String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TimeEntry {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  hours       Float
+  description String?
+  billable    Boolean @default(true)
+  date        DateTime @default(now())
+
+  createdAt DateTime @default(now())
+}
+
+model Announcement {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id])
+
+  title String
+  body  String
+
+  createdAt DateTime @default(now())
+}
+
+model AiGeneration {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  kind    String // sales_email | sales_sms | call_script | proposal | objection_handling | website_copy | ai_insight | monthly_report | call_prep
+  context String? // free-text label, e.g. lead/client/deal name
+  prompt  String
+  output  String
+
+  createdAt DateTime @default(now())
+}
+
+// A saved filter combination from the Lead Intelligence list — "run now" re-executes
+// the same filters against current data. No background scheduler exists in this app,
+// so this is intentionally manual, not a fake "runs automatically every day" promise.
+model SmartList {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name        String
+  filtersJson String // JSON of the filter-bar state
+
+  resultCount Int       @default(0)
+  lastRunAt   DateTime?
+
+  createdAt DateTime @default(now())
+}
+
+// A curated, orderable daily call list — built by an owner/admin from real Leads and
+// handed to a rep to work through. No background scheduler exists in this app, so
+// "daily" means the admin builds a fresh one each day, not an automatic recurring job.
+model CallList {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name    String
+  forDate DateTime // the calendar day this list is meant to be worked
+
+  createdById String?
+  createdBy   User?   @relation("CallListCreator", fields: [createdById], references: [id])
+
+  assignedToId String?
+  assignedTo   User?   @relation("CallListAssignee", fields: [assignedToId], references: [id])
+
+  status String @default("active") // active | archived
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items CallListItem[]
+}
+
+model CallListItem {
+  id         String   @id @default(cuid())
+  callListId String
+  callList   CallList @relation(fields: [callListId], references: [id], onDelete: Cascade)
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  order  Int    @default(0)
+  status String @default("pending") // pending | called | no_answer | voicemail | callback | not_interested | booked
+
+  outcomeNotes String?
+  calledAt     DateTime?
+  calledById   String?
+  calledBy     User?     @relation("CallListItemCaller", fields: [calledById], references: [id])
+
+  createdAt DateTime @default(now())
+}

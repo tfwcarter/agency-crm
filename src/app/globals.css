@@ -1,0 +1,308 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --c-bg: #faf8f4;
+  --c-bg-elevated: #ffffff;
+  --c-surface: #ffffff;
+  --c-surface-hover: #f5f1e9;
+  --c-border: #ebe4d8;
+  --c-border-strong: #ddd3c2;
+  --c-fg: #2b2620;
+  --c-fg-muted: #79705f;
+  --c-fg-subtle: #a89d8a;
+
+  --c-brand: #3b6fe8;
+  --c-brand-hover: #588af5;
+  --c-brand-fg: #ffffff;
+  --c-brand-soft: #e8effd;
+
+  --c-accent: #0d9c6f;
+  --c-accent-hover: #12b880;
+
+  --c-success: #16a34a;
+  --c-warning: #d97706;
+  --c-danger: #dc2626;
+  --c-info: #0ea5e9;
+
+  --shadow-sm: 0 1px 2px rgba(90, 70, 40, 0.06);
+  --shadow-card: 0 1px 2px rgba(90, 70, 40, 0.05), 0 8px 24px -10px rgba(90, 70, 40, 0.14);
+  --shadow-lift: 0 4px 12px -2px rgba(90, 70, 40, 0.1), 0 16px 32px -12px rgba(90, 70, 40, 0.2);
+  --shadow-brand: 0 4px 14px -4px rgba(59, 111, 232, 0.4);
+}
+
+.dark {
+  --c-bg: #17161a;
+  --c-bg-elevated: #1c1b1f;
+  --c-surface: #211f24;
+  --c-surface-hover: #29272d;
+  --c-border: #322f36;
+  --c-border-strong: #3d3a42;
+  --c-fg: #f5f4f2;
+  --c-fg-muted: #a8a4a0;
+  --c-fg-subtle: #77726c;
+
+  --c-brand: #4c85f0;
+  --c-brand-hover: #6b9bf5;
+  --c-brand-fg: #ffffff;
+  --c-brand-soft: #22335c;
+
+  --c-accent: #10b981;
+  --c-accent-hover: #22cd93;
+
+  --c-success: #22c55e;
+  --c-warning: #f59e0b;
+  --c-danger: #ef4444;
+  --c-info: #38bdf8;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -8px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 4px 12px -2px rgba(0, 0, 0, 0.3), 0 16px 32px -12px rgba(0, 0, 0, 0.4);
+  --shadow-brand: 0 4px 14px -4px rgba(76, 133, 240, 0.45);
+}
+
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-bg-elevated: var(--c-bg-elevated);
+  --color-surface: var(--c-surface);
+  --color-surface-hover: var(--c-surface-hover);
+  --color-border: var(--c-border);
+  --color-border-strong: var(--c-border-strong);
+  --color-fg: var(--c-fg);
+  --color-fg-muted: var(--c-fg-muted);
+  --color-fg-subtle: var(--c-fg-subtle);
+  --color-brand: var(--c-brand);
+  --color-brand-hover: var(--c-brand-hover);
+  --color-brand-fg: var(--c-brand-fg);
+  --color-brand-soft: var(--c-brand-soft);
+  --color-accent: var(--c-accent);
+  --color-accent-hover: var(--c-accent-hover);
+  --color-success: var(--c-success);
+  --color-warning: var(--c-warning);
+  --color-danger: var(--c-danger);
+  --color-info: var(--c-info);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--c-bg);
+  color: var(--c-fg);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::selection {
+  background: var(--c-brand);
+  color: white;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--c-border);
+  border-radius: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.glass {
+  background: color-mix(in srgb, var(--c-surface) 70%, transparent);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.28s ease-out both;
+}
+
+/* ============================================================
+   ADVANCED ANIMATION ENGINE
+   ============================================================ */
+
+/* --- Staggered entrance: children rise + fade in sequence --- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.stagger > * {
+  animation: rise-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.02s; }
+.stagger > *:nth-child(2) { animation-delay: 0.07s; }
+.stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger > *:nth-child(4) { animation-delay: 0.17s; }
+.stagger > *:nth-child(5) { animation-delay: 0.22s; }
+.stagger > *:nth-child(6) { animation-delay: 0.27s; }
+.stagger > *:nth-child(7) { animation-delay: 0.32s; }
+.stagger > *:nth-child(8) { animation-delay: 0.37s; }
+
+/* --- Aurora / moving mesh gradient background --- */
+@keyframes aurora-drift {
+  0%   { transform: translate3d(-8%, -6%, 0) rotate(0deg) scale(1.1); }
+  33%  { transform: translate3d(6%, 4%, 0) rotate(40deg) scale(1.25); }
+  66%  { transform: translate3d(-4%, 8%, 0) rotate(-30deg) scale(1.15); }
+  100% { transform: translate3d(-8%, -6%, 0) rotate(0deg) scale(1.1); }
+}
+.aurora {
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.5;
+  background:
+    radial-gradient(30% 30% at 20% 25%, color-mix(in srgb, var(--c-brand) 55%, transparent), transparent 70%),
+    radial-gradient(28% 28% at 78% 30%, color-mix(in srgb, var(--c-accent) 50%, transparent), transparent 70%),
+    radial-gradient(34% 34% at 55% 80%, color-mix(in srgb, var(--c-info) 45%, transparent), transparent 70%);
+  animation: aurora-drift 24s ease-in-out infinite;
+}
+.aurora-2 {
+  animation-duration: 34s;
+  animation-direction: reverse;
+  opacity: 0.35;
+}
+
+/* --- Shimmer sweep (skeletons, highlight passes) --- */
+@keyframes shimmer {
+  100% { transform: translateX(200%); }
+}
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c-fg) 8%, transparent), transparent);
+  animation: shimmer 2.2s ease-in-out infinite;
+}
+
+/* --- Animated gradient text --- */
+@keyframes gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+.gradient-text {
+  background: linear-gradient(100deg, var(--c-brand), var(--c-accent), var(--c-info), var(--c-brand));
+  background-size: 260% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 6s ease infinite;
+}
+
+/* --- Glow pulse (badges, live dots) --- */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-accent) 55%, transparent); }
+  50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--c-accent) 0%, transparent); }
+}
+.glow-pulse { animation: glow-pulse 2.4s ease-out infinite; }
+
+/* --- Floating orbs (welcome particles) --- */
+@keyframes float-orb {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  10%  { opacity: var(--orb-opacity, 0.5); }
+  90%  { opacity: var(--orb-opacity, 0.5); }
+  100% { transform: translateY(-120px) translateX(var(--orb-drift, 20px)); opacity: 0; }
+}
+
+/* --- Spotlight card: cursor-follow radial highlight --- */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--c-brand) 16%, transparent),
+    transparent 60%
+  );
+  z-index: -1;
+}
+.spotlight:hover::before { opacity: 1; }
+
+/* --- Button shine sweep --- */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  transform: translateX(-160%) skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transition: transform 0.6s ease;
+}
+.shine:hover::after {
+  transform: translateX(320%) skewX(-20deg);
+}
+
+/* --- Count-up number roll-in --- */
+@keyframes count-pop {
+  from { opacity: 0; transform: translateY(0.4em); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.count-pop { animation: count-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* --- Slow spin (progress rings, decor) --- */
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.spin-slow { animation: spin-slow 8s linear infinite; }
+
+/* --- Breathing scale --- */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+.breathe { animation: breathe 5s ease-in-out infinite; }
+
+/* --- Live ticking colon --- */
+@keyframes blink { 50% { opacity: 0.25; } }
+.blink { animation: blink 1s step-end infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger > *,
+  .aurora,
+  .shimmer::after,
+  .gradient-text,
+  .glow-pulse,
+  .spin-slow,
+  .breathe,
+  .blink,
+  .count-pop {
+    animation: none !important;
+  }
+  .shine::after { display: none; }
+}
