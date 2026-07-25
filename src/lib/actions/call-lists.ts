@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireSession, requireAdminSession } from "@/lib/session";
+import type { ImportRow } from "@/lib/csv";
 
 function getLeadIds(formData: FormData): string[] {
   return Array.from(new Set(formData.getAll("leadIds").map(String).filter(Boolean)));
@@ -38,93 +39,35 @@ export async function createCallListAction(formData: FormData) {
   redirect(`/dashboard/call-lists/${callList.id}`);
 }
 
-// Minimal CSV parser (handles quoted fields with embedded commas) — no dependency needed.
-function parseCsv(text: string): string[][] {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let field = "";
-  let inQuotes = false;
-  const chars = text.replace(/\r\n/g, "\n");
-
-  for (let i = 0; i < chars.length; i++) {
-    const c = chars[i];
-    if (inQuotes) {
-      if (c === '"') {
-        if (chars[i + 1] === '"') {
-          field += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += c;
-      }
-    } else if (c === '"') {
-      inQuotes = true;
-    } else if (c === ",") {
-      row.push(field);
-      field = "";
-    } else if (c === "\n") {
-      row.push(field);
-      rows.push(row);
-      row = [];
-      field = "";
-    } else {
-      field += c;
-    }
-  }
-  if (field.length > 0 || row.length > 0) {
-    row.push(field);
-    rows.push(row);
-  }
-  return rows.filter((r) => r.some((f) => f.trim().length > 0));
-}
-
-const COLUMN_ALIASES: Record<string, string[]> = {
-  businessName: ["name", "business", "business name", "company", "company name"],
-  phone: ["phone", "phone number", "number"],
-  email: ["email", "email address"],
-  website: ["website", "url", "site"],
-  city: ["city"],
-  state: ["state"],
-};
-
-function normalizeHeader(h: string) {
-  return h.trim().toLowerCase();
-}
-
 /**
- * Imports a call list straight from an uploaded CSV — no need to already have the
- * businesses as Leads first. Rows are matched to an existing Lead by business name
- * (case-insensitive, org-scoped); unmatched rows create a new Lead (source="import")
- * so nothing gets lost and the CRM stays the source of truth for follow-up.
+ * Creates a call list from CSV rows the client wizard already scanned, mapped, and
+ * previewed. Rows arrive normalized (one object per row with only the mapped
+ * fields). Each row is matched to an existing Lead by business name (case-
+ * insensitive, org-scoped); unmatched rows create a new Lead (source="import") so
+ * nothing is lost and the CRM stays the source of truth for follow-up.
  */
-export async function importCallListCsvAction(formData: FormData) {
+export async function createCallListFromCsvAction(formData: FormData) {
   const session = await requireAdminSession();
 
   const name = (formData.get("name") as string)?.trim();
   const forDateRaw = formData.get("forDate") as string;
   const assignedToId = (formData.get("assignedToId") as string) || null;
-  const file = formData.get("file") as File | null;
+  const rowsJson = formData.get("rowsJson") as string;
 
-  if (!name || !file || file.size === 0) {
+  if (!name || !rowsJson) {
     redirect(`/dashboard/call-lists/new?error=missing_fields`);
   }
 
-  const text = await file.text();
-  const rows = parseCsv(text);
-  if (rows.length < 2) {
+  let parsed: ImportRow[];
+  try {
+    parsed = JSON.parse(rowsJson);
+  } catch {
     redirect(`/dashboard/call-lists/new?error=empty_csv`);
   }
 
-  const headers = rows[0].map(normalizeHeader);
-  const colIndex: Record<string, number> = {};
-  for (const [field, aliases] of Object.entries(COLUMN_ALIASES)) {
-    const idx = headers.findIndex((h) => aliases.includes(h));
-    if (idx !== -1) colIndex[field] = idx;
-  }
-  if (colIndex.businessName === undefined) {
-    redirect(`/dashboard/call-lists/new?error=no_name_column`);
+  const rows = (Array.isArray(parsed!) ? parsed! : []).filter((r) => r?.businessName?.trim());
+  if (rows.length === 0) {
+    redirect(`/dashboard/call-lists/new?error=empty_csv`);
   }
 
   const orgId = session.user.organizationId;
@@ -132,22 +75,25 @@ export async function importCallListCsvAction(formData: FormData) {
   const existingByName = new Map(existingLeads.map((l) => [l.businessName.trim().toLowerCase(), l.id]));
 
   const leadIds: string[] = [];
-  for (const row of rows.slice(1)) {
-    const businessName = row[colIndex.businessName]?.trim();
-    if (!businessName) continue;
-
+  for (const row of rows) {
+    const businessName = row.businessName.trim();
     const key = businessName.toLowerCase();
     let leadId = existingByName.get(key);
     if (!leadId) {
+      const clean = (v: string | undefined) => v?.trim() || null;
       const created = await db.lead.create({
         data: {
           organizationId: orgId,
           businessName,
-          phone: colIndex.phone !== undefined ? row[colIndex.phone]?.trim() || null : null,
-          email: colIndex.email !== undefined ? row[colIndex.email]?.trim() || null : null,
-          website: colIndex.website !== undefined ? row[colIndex.website]?.trim() || null : null,
-          city: colIndex.city !== undefined ? row[colIndex.city]?.trim() || null : null,
-          state: colIndex.state !== undefined ? row[colIndex.state]?.trim() || null : null,
+          ownerName: clean(row.ownerName),
+          phone: clean(row.phone),
+          email: clean(row.email),
+          website: clean(row.website),
+          address: clean(row.address),
+          city: clean(row.city),
+          state: clean(row.state),
+          zip: clean(row.zip),
+          industry: clean(row.industry),
           source: "import",
           ownerId: session.user.id,
         },
