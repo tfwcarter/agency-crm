@@ -8,6 +8,10 @@ import { LeadFinderForm } from "@/components/leads/lead-finder-form";
 import { LeadFinderResults } from "@/components/leads/lead-finder-results";
 import { PageHeader, Card, Button, Badge } from "@/components/ui/primitives";
 
+// The Apify Google Maps scrape can run for tens of seconds; allow the render a
+// generous budget on Vercel (respected on Pro/Fluid; harmless elsewhere).
+export const maxDuration = 300;
+
 export default async function LeadFinderPage({
   searchParams,
 }: {
@@ -18,6 +22,7 @@ export default async function LeadFinderPage({
 
   const keys = await getOrgApiKeys(session.user.organizationId);
   const hasPlacesKey = Boolean(keys.googlePlacesApiKey);
+  const hasApifyKey = Boolean(keys.apifyApiKey);
 
   let discovery: Awaited<ReturnType<typeof discoverBusinesses>> | null = null;
   if (location && niche) {
@@ -28,6 +33,7 @@ export default async function LeadFinderPage({
       radiusMiles: Number(radius) || 8,
       placesApiKey: keys.googlePlacesApiKey,
       tomtomApiKey: keys.tomtomApiKey,
+      apifyApiKey: keys.apifyApiKey,
       limit: Number(limit) || 40,
       phoneOnly: phone === "yes",
     });
@@ -71,8 +77,14 @@ export default async function LeadFinderPage({
         title="Lead Finder"
         description="Pick a city and a niche, auto-analyze real businesses, and surface only the ones worth calling"
         action={
-          <Badge tone={hasPlacesKey || Boolean(keys.tomtomApiKey) ? "brand" : "default"}>
-            {hasPlacesKey ? "Google Places connected" : keys.tomtomApiKey ? "TomTom connected" : "Free OpenStreetMap data"}
+          <Badge tone={hasApifyKey || hasPlacesKey || Boolean(keys.tomtomApiKey) ? "brand" : "default"}>
+            {hasApifyKey
+              ? "Apify Google Maps connected"
+              : hasPlacesKey
+                ? "Google Places connected"
+                : keys.tomtomApiKey
+                  ? "TomTom connected"
+                  : "Free OpenStreetMap data"}
           </Badge>
         }
       />

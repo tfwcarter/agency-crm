@@ -7,6 +7,7 @@ export type OrgApiKeys = {
   stripeSecretKey: string | null;
   googlePlacesApiKey: string | null;
   tomtomApiKey: string | null;
+  apifyApiKey: string | null;
 };
 
 /**
@@ -17,7 +18,7 @@ export type OrgApiKeys = {
 export async function getOrgApiKeys(organizationId: string): Promise<OrgApiKeys> {
   const org = await db.organization.findUnique({
     where: { id: organizationId },
-    select: { groqApiKey: true, anthropicApiKey: true, pagespeedApiKey: true, stripeSecretKey: true, googlePlacesApiKey: true, tomtomApiKey: true },
+    select: { groqApiKey: true, anthropicApiKey: true, pagespeedApiKey: true, stripeSecretKey: true, googlePlacesApiKey: true, tomtomApiKey: true, apifyApiKey: true },
   });
 
   return {
@@ -27,5 +28,6 @@ export async function getOrgApiKeys(organizationId: string): Promise<OrgApiKeys>
     stripeSecretKey: org?.stripeSecretKey || process.env.STRIPE_SECRET_KEY || null,
     googlePlacesApiKey: org?.googlePlacesApiKey || process.env.GOOGLE_PLACES_API_KEY || null,
     tomtomApiKey: org?.tomtomApiKey || process.env.TOMTOM_API_KEY || null,
+    apifyApiKey: org?.apifyApiKey || process.env.APIFY_API_KEY || null,
   };
 }

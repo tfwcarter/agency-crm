@@ -24,6 +24,7 @@ model Organization {
   stripeSecretKey   String?
   googlePlacesApiKey String?
   tomtomApiKey       String?
+  apifyApiKey        String?
 
   users         User[]
   clients       Client[]

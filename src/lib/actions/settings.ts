@@ -15,7 +15,7 @@ export async function updateOrgNameAction(formData: FormData) {
   revalidatePath("/dashboard");
 }
 
-const API_KEY_FIELDS = ["groqApiKey", "anthropicApiKey", "pagespeedApiKey", "stripeSecretKey", "googlePlacesApiKey", "tomtomApiKey"] as const;
+const API_KEY_FIELDS = ["groqApiKey", "anthropicApiKey", "pagespeedApiKey", "stripeSecretKey", "googlePlacesApiKey", "tomtomApiKey", "apifyApiKey"] as const;
 export type ApiKeyField = (typeof API_KEY_FIELDS)[number];
 
 function assertApiKeyField(field: string): asserts field is ApiKeyField {

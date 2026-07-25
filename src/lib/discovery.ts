@@ -3,15 +3,18 @@ import { searchNominatimBusinesses } from "@/lib/nominatim-leads";
 import { searchOverpassBusinesses, type RawOsmLead } from "@/lib/osm-leads";
 import { searchPlaces } from "@/lib/places";
 import { searchTomTom } from "@/lib/tomtom";
+import { searchApifyGoogleMaps } from "@/lib/apify";
 import { findCityPreset, findNichePreset, cityLabel } from "@/lib/lead-finder-presets";
 
 // One normalized business shape regardless of source, so the Lead Finder UI and
 // qualification pipeline don't care where a candidate came from.
 //
 // Source chain (each verified live, in order of data quality):
-//   1. Google Places  — authoritative website/ratings/reviews (needs a pasted key)
-//   2. Nominatim      — keyless OSM, reliable infra, phones/websites via extratags
-//   3. Overpass pool  — keyless OSM mirrors, targeted queries (fallback only)
+//   1. Apify GMaps    — real Google Maps listings via the scraper actor (pasted token)
+//   2. Google Places  — authoritative website/ratings/reviews (needs a pasted key)
+//   3. TomTom         — real commercial POI data (free 2,500/day key)
+//   4. Nominatim      — keyless OSM, reliable infra, phones/websites via extratags
+//   5. Overpass pool  — keyless OSM mirrors, targeted queries (fallback only)
 export interface DiscoveredBusiness {
   key: string;
   name: string;
@@ -29,12 +32,12 @@ export interface DiscoveredBusiness {
   linkedinUrl: string | null;
   googleRating: number | null;
   googleReviews: number | null;
-  source: "google_places" | "openstreetmap";
+  source: "apify" | "google_places" | "openstreetmap";
 }
 
 export type DiscoveryResult = {
   businesses: DiscoveredBusiness[];
-  source: "google_places" | "openstreetmap";
+  source: "apify" | "google_places" | "openstreetmap";
   resolvedLocation: string | null;
   warning: string | null;
   error: string | null;
@@ -81,6 +84,7 @@ export async function discoverBusinesses(params: {
   radiusMiles: number;
   placesApiKey: string | null;
   tomtomApiKey?: string | null;
+  apifyApiKey?: string | null;
   limit?: number;
   phoneOnly?: boolean;
 }): Promise<DiscoveryResult> {
@@ -113,7 +117,47 @@ export async function discoverBusinesses(params: {
 
   const radiusMeters = params.radiusMiles * 1609.34;
 
-  // --- 1. Google Places (authoritative, needs key) ---
+  // --- 1. Apify Google Maps Scraper (richest: real Google Maps listings) ---
+  if (params.apifyApiKey) {
+    const search = [params.niche, params.keywords?.split(",")[0]?.trim()].filter(Boolean).join(" ");
+    const res = await searchApifyGoogleMaps({
+      apiKey: params.apifyApiKey,
+      search,
+      location: resolvedLocation.split(",").slice(0, 3).join(",").trim() || params.location,
+      // Google Maps scrapes run ~1s/place; cap so the request stays within the
+      // page's function budget while still respecting the user's chosen count.
+      maxResults: Math.min(limit, 50),
+    });
+
+    if (res.ok && res.businesses.length > 0) {
+      const businesses: DiscoveredBusiness[] = res.businesses.map((b) => ({
+        key: b.id,
+        name: b.name,
+        category: b.category,
+        phone: b.phone,
+        website: b.website,
+        address: b.address,
+        city: b.city,
+        state: b.state,
+        zip: b.zip,
+        latitude: b.latitude,
+        longitude: b.longitude,
+        facebookUrl: null,
+        instagramUrl: null,
+        linkedinUrl: null,
+        googleRating: b.googleRating,
+        googleReviews: b.googleReviews,
+        source: "apify",
+      }));
+      return { businesses: finalize(businesses, phoneOnly, limit), source: "apify", resolvedLocation, warning: null, error: null };
+    }
+    // Key present but the scrape failed or returned nothing — degrade to the free chain.
+    const free = await discoverViaFreeSources({ ...params, lat, lon, resolvedLocation, radiusMeters, nichePreset, phoneOnly, limit });
+    if (!res.ok) return { ...free, warning: `Apify Google Maps couldn't be reached (${res.error}); showing free OpenStreetMap results instead.` };
+    return free;
+  }
+
+  // --- 2. Google Places (authoritative, needs key) ---
   if (params.placesApiKey) {
     const res = await searchPlaces({
       apiKey: params.placesApiKey,
@@ -162,7 +206,7 @@ export async function discoverBusinesses(params: {
     return { ...free, warning: `Google Places couldn't be reached (${res.error}); showing free OpenStreetMap results instead.` };
   }
 
-  // --- 2. TomTom (real commercial POI data, free 2,500/day key) ---
+  // --- 3. TomTom (real commercial POI data, free 2,500/day key) ---
   if (params.tomtomApiKey) {
     const query = [params.niche, params.keywords?.split(",")[0]].filter(Boolean).join(" ");
     const res = await searchTomTom({
@@ -200,7 +244,7 @@ export async function discoverBusinesses(params: {
     return free;
   }
 
-  // --- 3 & 4. Free chain: Nominatim + Photon, then Overpass mirrors ---
+  // --- 4 & 5. Free chain: Nominatim + Photon, then Overpass mirrors ---
   return discoverViaFreeSources({ ...params, lat, lon, resolvedLocation, radiusMeters, nichePreset, phoneOnly, limit });
 }
 

@@ -19,7 +19,7 @@ export function LeadFinderResults({
 }: {
   businesses: DiscoveredBusiness[];
   existingNames: string[];
-  source: "google_places" | "openstreetmap";
+  source: "apify" | "google_places" | "openstreetmap";
 }) {
   const router = useRouter();
   const [quals, setQuals] = useState<Map<string, Qualification>>(new Map());
@@ -116,8 +116,8 @@ export function LeadFinderResults({
         <div className="flex items-center gap-2 text-sm text-fg-muted">
           <MapPin size={14} />
           {businesses.length} businesses found
-          <Badge tone={source === "google_places" ? "brand" : "default"}>
-            {source === "google_places" ? "Google Places" : "OpenStreetMap"}
+          <Badge tone={source === "apify" || source === "google_places" ? "brand" : "default"}>
+            {source === "apify" ? "Google Maps" : source === "google_places" ? "Google Places" : "OpenStreetMap"}
           </Badge>
         </div>
 

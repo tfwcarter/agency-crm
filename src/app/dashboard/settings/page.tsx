@@ -34,6 +34,12 @@ const INTEGRATIONS: { field: ApiKeyField; label: string; hint: string; docs: str
     docs: "https://developers.google.com/speed/docs/insights/v5/get-started",
   },
   {
+    field: "apifyApiKey",
+    label: "Apify — Google Maps Scraper",
+    hint: "Best Lead Finder source: real Google Maps listings with website, phone, star rating, and review count. Takes priority over every other source when connected. Paste your Apify API token.",
+    docs: "https://console.apify.com/account/integrations",
+  },
+  {
     field: "tomtomApiKey",
     label: "TomTom — free business data",
     hint: "Recommended for the Lead Finder: real commercial business listings (far denser than OpenStreetMap). Free 2,500 searches/day, no credit card.",
