@@ -33,12 +33,24 @@ export default async function LeadFinderPage({
     });
   }
 
+  // Every business name already in this org's leads (any source), so the finder
+  // never re-surfaces a business you've already added.
   const existingNames = (
     await db.lead.findMany({
-      where: { organizationId: session.user.organizationId, source: "lead_finder" },
+      where: { organizationId: session.user.organizationId },
       select: { businessName: true },
     })
   ).map((l) => l.businessName);
+  const existingNameSet = new Set(existingNames.map((n) => n.trim().toLowerCase()));
+
+  let hiddenCount = 0;
+  if (discovery && discovery.businesses.length > 0) {
+    const before = discovery.businesses.length;
+    discovery.businesses = discovery.businesses.filter(
+      (b) => !existingNameSet.has(b.name.trim().toLowerCase())
+    );
+    hiddenCount = before - discovery.businesses.length;
+  }
 
   const formKey = [location, niche, radius, keywords, limit, phone].join("|");
   const retryHref = (() => {
@@ -103,14 +115,22 @@ export default async function LeadFinderPage({
         {discovery?.warning && <Card className="mb-6 p-4 text-sm text-warning">{discovery.warning}</Card>}
 
         {discovery && !discovery.error && discovery.businesses.length > 0 && (
-          <LeadFinderResults businesses={discovery.businesses} existingNames={existingNames} source={discovery.source} />
+          <>
+            {hiddenCount > 0 && (
+              <p className="mb-3 text-xs text-fg-subtle">
+                {hiddenCount} business{hiddenCount === 1 ? "" : "es"} already in your leads {hiddenCount === 1 ? "was" : "were"} hidden.
+              </p>
+            )}
+            <LeadFinderResults businesses={discovery.businesses} existingNames={existingNames} source={discovery.source} />
+          </>
         )}
 
         {discovery && !discovery.error && discovery.businesses.length === 0 && (
           <Card className="flex flex-wrap items-center justify-between gap-3 p-4">
             <p className="text-sm text-fg-muted">
-              No businesses matched &quot;{niche}&quot; near {discovery.resolvedLocation ?? location}. Try a bigger
-              radius, a broader niche, or check the phone-only filter.
+              {hiddenCount > 0
+                ? `Every business we found for "${niche}" near ${discovery.resolvedLocation ?? location} is already in your leads. Try a bigger radius or a different niche to find new ones.`
+                : `No businesses matched "${niche}" near ${discovery.resolvedLocation ?? location}. Try a bigger radius, a broader niche, or check the phone-only filter.`}
             </p>
             <Link href={retryHref}>
               <Button variant="secondary" size="sm">

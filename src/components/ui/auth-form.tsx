@@ -37,7 +37,7 @@ export function AuthForm({
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <div className="mb-5 flex justify-center">
-            <LogoLockup height={34} />
+            <LogoLockup height={40} tagline />
           </div>
           <h1 className="text-xl font-semibold text-fg">{title}</h1>
           <p className="mt-1 text-sm text-fg-muted">{subtitle}</p>

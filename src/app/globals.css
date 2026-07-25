@@ -2,64 +2,72 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ============================================================
+   Shepherds golden-black scheme — parchment gold on warm black.
+   Matches the Shepherds Web Design & SEO Agency brand. Dark is the
+   premium default; light is a warm parchment variant for the toggle.
+   ============================================================ */
+
 :root {
-  --c-bg: #faf8f4;
-  --c-bg-elevated: #ffffff;
-  --c-surface: #ffffff;
-  --c-surface-hover: #f5f1e9;
-  --c-border: #ebe4d8;
-  --c-border-strong: #ddd3c2;
-  --c-fg: #2b2620;
-  --c-fg-muted: #79705f;
-  --c-fg-subtle: #a89d8a;
+  /* Light — warm parchment with bronze-gold accents */
+  --c-bg: #faf7ee;
+  --c-bg-elevated: #fffdf6;
+  --c-surface: #fffdf6;
+  --c-surface-hover: #f3ecda;
+  --c-border: #e8dfc8;
+  --c-border-strong: #d7c9a9;
+  --c-fg: #221f16;
+  --c-fg-muted: #6b6250;
+  --c-fg-subtle: #9c917a;
 
-  --c-brand: #3b6fe8;
-  --c-brand-hover: #588af5;
-  --c-brand-fg: #ffffff;
-  --c-brand-soft: #e8effd;
+  --c-brand: #9a7a26;
+  --c-brand-hover: #b8963f;
+  --c-brand-fg: #fffdf6;
+  --c-brand-soft: #f3e9cd;
 
-  --c-accent: #0d9c6f;
-  --c-accent-hover: #12b880;
+  --c-accent: #b8963f;
+  --c-accent-hover: #cfae5c;
 
-  --c-success: #16a34a;
-  --c-warning: #d97706;
-  --c-danger: #dc2626;
-  --c-info: #0ea5e9;
+  --c-success: #5f7d47;
+  --c-warning: #b8801f;
+  --c-danger: #c0453a;
+  --c-info: #b8996a;
 
-  --shadow-sm: 0 1px 2px rgba(90, 70, 40, 0.06);
-  --shadow-card: 0 1px 2px rgba(90, 70, 40, 0.05), 0 8px 24px -10px rgba(90, 70, 40, 0.14);
-  --shadow-lift: 0 4px 12px -2px rgba(90, 70, 40, 0.1), 0 16px 32px -12px rgba(90, 70, 40, 0.2);
-  --shadow-brand: 0 4px 14px -4px rgba(59, 111, 232, 0.4);
+  --shadow-sm: 0 1px 2px rgba(90, 70, 30, 0.06);
+  --shadow-card: 0 1px 2px rgba(90, 70, 30, 0.05), 0 8px 24px -10px rgba(90, 70, 30, 0.16);
+  --shadow-lift: 0 4px 12px -2px rgba(90, 70, 30, 0.12), 0 16px 32px -12px rgba(90, 70, 30, 0.22);
+  --shadow-brand: 0 4px 16px -4px rgba(154, 122, 38, 0.4);
 }
 
 .dark {
-  --c-bg: #17161a;
-  --c-bg-elevated: #1c1b1f;
-  --c-surface: #211f24;
-  --c-surface-hover: #29272d;
-  --c-border: #322f36;
-  --c-border-strong: #3d3a42;
-  --c-fg: #f5f4f2;
-  --c-fg-muted: #a8a4a0;
-  --c-fg-subtle: #77726c;
+  /* Dark — the premium golden-black: warm ink ground, parchment-gold accent */
+  --c-bg: #0a0a09;
+  --c-bg-elevated: #101010;
+  --c-surface: #16150f;
+  --c-surface-hover: #201e16;
+  --c-border: #2b2820;
+  --c-border-strong: #3a362b;
+  --c-fg: #f3efe2;
+  --c-fg-muted: #aca591;
+  --c-fg-subtle: #837c6c;
 
-  --c-brand: #4c85f0;
-  --c-brand-hover: #6b9bf5;
-  --c-brand-fg: #ffffff;
-  --c-brand-soft: #22335c;
+  --c-brand: #e6d29b;
+  --c-brand-hover: #f3e7bd;
+  --c-brand-fg: #14130d;
+  --c-brand-soft: #2a2416;
 
-  --c-accent: #10b981;
-  --c-accent-hover: #22cd93;
+  --c-accent: #cfae5c;
+  --c-accent-hover: #e9cf8a;
 
-  --c-success: #22c55e;
-  --c-warning: #f59e0b;
-  --c-danger: #ef4444;
-  --c-info: #38bdf8;
+  --c-success: #9db584;
+  --c-warning: #e9cf8a;
+  --c-danger: #e0776b;
+  --c-info: #dcc9a0;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -8px rgba(0, 0, 0, 0.35);
-  --shadow-lift: 0 4px 12px -2px rgba(0, 0, 0, 0.3), 0 16px 32px -12px rgba(0, 0, 0, 0.4);
-  --shadow-brand: 0 4px 14px -4px rgba(76, 133, 240, 0.45);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+  --shadow-lift: 0 4px 14px -2px rgba(0, 0, 0, 0.5), 0 20px 44px -14px rgba(0, 0, 0, 0.7);
+  --shadow-brand: 0 6px 22px -6px rgba(230, 210, 155, 0.35);
 }
 
 @theme inline {
@@ -96,7 +104,7 @@ body {
 
 ::selection {
   background: var(--c-brand);
-  color: white;
+  color: var(--c-brand-fg);
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -169,18 +177,33 @@ body {
   position: absolute;
   inset: -40%;
   pointer-events: none;
-  filter: blur(60px);
-  opacity: 0.5;
+  filter: blur(64px);
+  opacity: 0.6;
   background:
-    radial-gradient(30% 30% at 20% 25%, color-mix(in srgb, var(--c-brand) 55%, transparent), transparent 70%),
-    radial-gradient(28% 28% at 78% 30%, color-mix(in srgb, var(--c-accent) 50%, transparent), transparent 70%),
-    radial-gradient(34% 34% at 55% 80%, color-mix(in srgb, var(--c-info) 45%, transparent), transparent 70%);
+    radial-gradient(30% 30% at 18% 24%, color-mix(in srgb, var(--c-brand) 62%, transparent), transparent 70%),
+    radial-gradient(26% 26% at 80% 28%, color-mix(in srgb, var(--c-accent) 58%, transparent), transparent 70%),
+    radial-gradient(34% 34% at 52% 82%, color-mix(in srgb, var(--c-info) 50%, transparent), transparent 70%),
+    radial-gradient(22% 22% at 68% 62%, color-mix(in srgb, var(--c-brand-hover) 45%, transparent), transparent 70%);
   animation: aurora-drift 24s ease-in-out infinite;
 }
 .aurora-2 {
   animation-duration: 34s;
   animation-direction: reverse;
-  opacity: 0.35;
+  opacity: 0.4;
+  filter: blur(80px) hue-rotate(-8deg);
+}
+/* Faint drifting gold shimmer over the aurora — adds depth without noise. */
+@keyframes aurora-sheen {
+  0%, 100% { opacity: 0.12; transform: translateX(-6%); }
+  50%      { opacity: 0.28; transform: translateX(6%); }
+}
+.aurora-sheen {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: radial-gradient(60% 40% at 50% 0%, color-mix(in srgb, var(--c-brand) 40%, transparent), transparent 72%);
+  filter: blur(50px);
+  animation: aurora-sheen 12s ease-in-out infinite;
 }
 
 /* --- Shimmer sweep (skeletons, highlight passes) --- */
@@ -205,8 +228,16 @@ body {
   0%, 100% { background-position: 0% 50%; }
   50%      { background-position: 100% 50%; }
 }
+/* Gold-leaf sweep — a bright specular highlight travelling through the gold. */
 .gradient-text {
-  background: linear-gradient(100deg, var(--c-brand), var(--c-accent), var(--c-info), var(--c-brand));
+  background: linear-gradient(
+    100deg,
+    var(--c-accent) 0%,
+    var(--c-brand) 28%,
+    color-mix(in srgb, var(--c-brand-hover) 85%, #ffffff) 50%,
+    var(--c-brand) 72%,
+    var(--c-accent) 100%
+  );
   background-size: 260% auto;
   -webkit-background-clip: text;
   background-clip: text;

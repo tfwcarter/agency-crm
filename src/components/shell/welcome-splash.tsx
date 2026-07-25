@@ -180,6 +180,7 @@ export function WelcomeSplash({ greeting, firstName, orgName }: { greeting: stri
           {/* moving aurora field */}
           <div className="aurora" />
           <div className="aurora aurora-2" />
+          <div className="aurora-sheen" />
 
           {/* faint grid vignette */}
           <div
@@ -195,7 +196,7 @@ export function WelcomeSplash({ greeting, firstName, orgName }: { greeting: stri
               animate={{ scale: 1, y: 0, opacity: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 16 }}
             >
-              <LogoLockup height={44} className="!rounded-2xl !px-6 !py-4" />
+              <LogoLockup height={52} tagline />
             </motion.div>
 
             <motion.div
