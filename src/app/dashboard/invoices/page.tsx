@@ -36,7 +36,7 @@ export default async function InvoicesPage() {
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         {invoices.length === 0 ? (
           <Card className="flex flex-col items-center justify-center py-20 text-center">
             <Receipt size={28} className="mb-3 text-fg-subtle" />
@@ -50,7 +50,7 @@ export default async function InvoicesPage() {
           </Card>
         ) : (
           <Card className="overflow-hidden">
-            <table className="w-full text-sm">
+            <div className="scrollbar-thin overflow-x-auto"><table className="w-full min-w-[560px] text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-xs text-fg-subtle">
                   <th className="px-4 py-3 font-medium">Number</th>
@@ -90,7 +90,7 @@ export default async function InvoicesPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </Card>
         )}
       </div>

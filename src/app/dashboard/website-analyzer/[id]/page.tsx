@@ -47,7 +47,7 @@ export default async function WebsiteAuditDetailPage({ params }: { params: Promi
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="mb-5 p-6 text-center">
           <p className="text-5xl font-bold text-fg">{audit.overallScore}</p>
           <p className="mt-1 text-sm text-fg-muted">Overall Website Score</p>

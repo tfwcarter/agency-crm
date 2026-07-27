@@ -21,7 +21,7 @@ export default async function NewAppointmentPage({
     <div>
       <PageHeader title="New Appointment" description="Schedule a call or meeting" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="max-w-xl p-6">
           <form action={createAppointmentAction} className="space-y-4">
             <Field label="Title" required>

@@ -22,7 +22,7 @@ export default async function WebsiteBuilderPage({ searchParams }: { searchParam
     <div>
       <PageHeader title="AI Website Builder" description="Generate real, publishable website copy for a client in seconds" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         {!hasAiKey && <NoAiKeyBanner feature="website copy generation" />}
         {error === "no_api_key" && (
           <Card className="mb-5 p-4 text-sm text-danger">Generation failed — no AI key connected. Add one in Settings.</Card>

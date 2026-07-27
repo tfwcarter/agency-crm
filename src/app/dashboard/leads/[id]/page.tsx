@@ -104,7 +104,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
         }
       />
 
-      <div className="grid grid-cols-1 gap-5 px-6 py-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-1">
           <Card className="p-5 text-center">
             <p className={`text-5xl font-bold ${scoreTone(lead.opportunityScore)}`}>{lead.opportunityScore ?? "—"}</p>

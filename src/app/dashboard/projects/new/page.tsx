@@ -12,7 +12,7 @@ export default async function NewProjectPage({ searchParams }: { searchParams: P
     <div>
       <PageHeader title="New Project" description="Kick off a new deliverable for a client" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="max-w-xl p-6">
           <form action={createProjectAction} className="space-y-4">
             <Field label="Project name" required>

@@ -95,7 +95,7 @@ export default async function CallListDetailPage({ params }: { params: Promise<{
         }
       />
 
-      <div className="grid grid-cols-1 gap-5 px-6 py-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <Card className="mb-4 p-4">
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg">

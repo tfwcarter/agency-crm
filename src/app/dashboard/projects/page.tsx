@@ -43,7 +43,7 @@ export default async function ProjectsPage() {
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         {projects.length === 0 ? (
           <Card className="flex flex-col items-center justify-center py-20 text-center">
             <FolderKanban size={28} className="mb-3 text-fg-subtle" />

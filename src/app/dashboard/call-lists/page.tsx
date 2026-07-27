@@ -42,7 +42,7 @@ export default async function CallListsPage() {
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         {callLists.length === 0 ? (
           <Card className="flex flex-col items-center justify-center py-20 text-center">
             <Phone size={28} className="mb-3 text-fg-subtle" />

@@ -86,7 +86,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <SmartListsBar lists={smartLists} />
         <LeadFilterBar filters={sp} industries={industries} owners={owners} />
 

@@ -21,7 +21,7 @@ export default async function NewDealPage({
     <div>
       <PageHeader title="New Deal" description="Add a deal to your sales pipeline" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="max-w-xl p-6">
           <form action={createDealAction} className="space-y-4">
             <Field label="Deal title" required>

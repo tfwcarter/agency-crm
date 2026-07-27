@@ -25,7 +25,7 @@ export default async function EditLeadPage({ params }: { params: Promise<{ id: s
     <div>
       <PageHeader title={`Edit ${lead.businessName}`} />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="max-w-2xl p-6">
           <form action={update} className="space-y-5">
             <div className="grid grid-cols-2 gap-4">

@@ -21,7 +21,7 @@ export default async function AiAssistantPage({ searchParams }: { searchParams: 
     <div>
       <PageHeader title="AI Sales Assistant" description="Generate outreach, scripts, and proposals grounded in real lead/client data" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         {!hasAiKey && <NoAiKeyBanner feature="real AI generation" />}
 
         <AssistantForm leads={leads} clients={clients} defaultLeadId={leadId} defaultKind={kind} />

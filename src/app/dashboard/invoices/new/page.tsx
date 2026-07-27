@@ -13,7 +13,7 @@ export default async function NewInvoicePage({ searchParams }: { searchParams: P
     <div>
       <PageHeader title="New Invoice" description="Create an invoice, quote, or contract" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="max-w-2xl p-6">
           <form action={createInvoiceAction} className="space-y-5">
             <div className="grid grid-cols-3 gap-4">

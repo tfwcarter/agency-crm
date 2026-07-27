@@ -55,7 +55,7 @@ Revenue collected last 6 months: ${revenueByMonth.map((m) => `${m.month} $${m.re
     <div>
       <PageHeader title="Marketing Reports" description="Real performance data pulled live from your CRM" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <div className="mb-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
           <Stat label="MRR" value={formatCurrency(mrr)} />
           <Stat label="Win Rate" value={`${winRate.toFixed(0)}%`} />

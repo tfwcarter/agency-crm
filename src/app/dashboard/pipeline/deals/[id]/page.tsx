@@ -32,7 +32,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
         action={<Badge tone={STATUS_TONE[deal.status as keyof typeof STATUS_TONE] ?? "default"}>{deal.status}</Badge>}
       />
 
-      <div className="grid grid-cols-1 gap-5 px-6 py-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-3">
         <Card className="p-5 lg:col-span-1">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-fg-subtle">Details</h3>
           <dl className="space-y-2.5 text-sm">

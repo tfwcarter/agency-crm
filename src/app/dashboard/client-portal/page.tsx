@@ -18,7 +18,7 @@ export default async function ClientPortalOverviewPage() {
     <div>
       <PageHeader title="Client Portal" description={`${enabledCount} of ${clients.length} clients have portal access`} />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="mb-5 flex items-start gap-3 p-4">
           <MonitorSmartphone size={18} className="mt-0.5 shrink-0 text-brand" />
           <p className="text-sm text-fg-muted">
@@ -29,7 +29,7 @@ export default async function ClientPortalOverviewPage() {
         </Card>
 
         <Card className="overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="scrollbar-thin overflow-x-auto"><table className="w-full min-w-[560px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs text-fg-subtle">
                 <th className="px-4 py-3 font-medium">Client</th>
@@ -52,7 +52,7 @@ export default async function ClientPortalOverviewPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </Card>
       </div>
     </div>

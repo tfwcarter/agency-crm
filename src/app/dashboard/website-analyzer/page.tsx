@@ -31,7 +31,7 @@ export default async function WebsiteAnalyzerPage({
     <div>
       <PageHeader title="AI Website Analyzer" description="Paste any website to get a real, automated audit and sales pitch" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="mb-6 max-w-2xl p-6">
           <form action={runWebsiteAuditAction} className="space-y-4">
             {leadId && <input type="hidden" name="leadId" value={leadId} />}
@@ -59,7 +59,7 @@ export default async function WebsiteAnalyzerPage({
           </Card>
         ) : (
           <Card className="overflow-hidden">
-            <table className="w-full text-sm">
+            <div className="scrollbar-thin overflow-x-auto"><table className="w-full min-w-[560px] text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-xs text-fg-subtle">
                   <th className="px-4 py-3 font-medium">Website</th>
@@ -94,7 +94,7 @@ export default async function WebsiteAnalyzerPage({
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </Card>
         )}
       </div>

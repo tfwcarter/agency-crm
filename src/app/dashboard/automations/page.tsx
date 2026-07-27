@@ -35,7 +35,7 @@ export default async function AutomationsPage() {
     <div>
       <PageHeader title="Automations" description="Real trigger → action rules that run against live CRM events" />
 
-      <div className="grid grid-cols-1 gap-5 px-6 py-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-3">
         <Card className="p-5 lg:col-span-1">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-fg-subtle">New automation</h3>
           <AutomationBuilder />

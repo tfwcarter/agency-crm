@@ -42,7 +42,7 @@ export default async function AppointmentsPage() {
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         {appointments.length === 0 ? (
           <Card className="flex flex-col items-center justify-center py-20 text-center">
             <CalendarClock size={28} className="mb-3 text-fg-subtle" />

@@ -89,7 +89,7 @@ export default async function LeadFinderPage({
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="mb-6 p-6">
           <LeadFinderForm
             key={formKey}

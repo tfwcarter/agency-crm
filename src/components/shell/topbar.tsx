@@ -6,6 +6,7 @@ import { signOutAction } from "@/lib/actions/session";
 import { initials } from "@/lib/utils";
 import { useCommandPalette } from "./command-palette-context";
 import { ThemeToggle } from "./theme-toggle";
+import { MobileNav } from "./mobile-nav";
 
 export function Topbar({ userName, userEmail }: { userName: string; userEmail: string }) {
   const [open, setOpen] = useState(false);
@@ -14,14 +15,15 @@ export function Topbar({ userName, userEmail }: { userName: string; userEmail: s
   const isMac = typeof navigator !== "undefined" && /mac/i.test(navigator.platform);
 
   return (
-    <header className="glass sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-border px-6">
+    <header className="glass sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border px-4 md:px-6">
+      <MobileNav />
       <button
         onClick={() => setPaletteOpen(true)}
         className="flex w-full max-w-sm items-center gap-2 rounded-[var(--radius-control)] border border-border bg-surface px-3 py-1.5 text-sm text-fg-subtle transition-colors hover:border-border-strong hover:text-fg-muted"
       >
-        <Search size={14} />
-        <span className="flex-1 text-left">Search or jump to…</span>
-        <kbd className="rounded border border-border px-1.5 py-0.5 text-[10px]">{isMac ? "⌘K" : "Ctrl+K"}</kbd>
+        <Search size={14} className="shrink-0" />
+        <span className="flex-1 truncate text-left">Search or jump to…</span>
+        <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-[10px] sm:block">{isMac ? "⌘K" : "Ctrl+K"}</kbd>
       </button>
 
       <div className="flex shrink-0 items-center gap-2">

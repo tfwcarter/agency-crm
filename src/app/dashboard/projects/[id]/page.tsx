@@ -65,7 +65,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <StatCard label="Budget" value={formatCurrency(project.budget)} />
           <StatCard label="Hours Logged" value={`${project.hoursLogged}h`} />

@@ -58,7 +58,7 @@ export default async function WebsiteBuilderDetailPage({ params }: { params: Pro
         }
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="overflow-hidden">
           <div className="bg-bg px-8 py-16 text-center">
             <h1 className="text-3xl font-bold text-fg">{website.heroHeadline}</h1>

@@ -35,10 +35,10 @@ export default async function TeamPage() {
     <div>
       <PageHeader title="Team" description={`${team.length} team members`} />
 
-      <div className="grid grid-cols-1 gap-5 px-6 py-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-2">
           <Card className="overflow-hidden">
-            <table className="w-full text-sm">
+            <div className="scrollbar-thin overflow-x-auto"><table className="w-full min-w-[560px] text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-xs text-fg-subtle">
                   <th className="px-4 py-3 font-medium">Member</th>
@@ -107,7 +107,7 @@ export default async function TeamPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </Card>
 
           <Card className="p-5">

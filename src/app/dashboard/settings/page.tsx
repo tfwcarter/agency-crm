@@ -74,7 +74,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
     <div>
       <PageHeader title="Settings" description="Agency profile, integrations, and pipeline configuration" />
 
-      <div className="grid grid-cols-1 gap-5 px-6 py-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 px-4 py-5 sm:px-6 lg:grid-cols-2">
         <div className="space-y-5">
           <Card className="p-5">
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-fg-subtle">Agency Profile</h3>

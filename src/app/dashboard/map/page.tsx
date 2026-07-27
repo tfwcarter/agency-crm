@@ -95,7 +95,7 @@ export default async function MapViewPage() {
         description={`${pins.length} pinned · ${unmapped > 0 ? `${unmapped} without a mappable address` : "all mapped"}`}
       />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         {pins.length === 0 ? (
           <Card className="flex flex-col items-center justify-center py-20 text-center">
             <p className="text-sm font-medium text-fg">No addresses to map yet</p>

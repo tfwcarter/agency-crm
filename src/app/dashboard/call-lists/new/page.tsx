@@ -61,7 +61,7 @@ export default async function NewCallListPage({
     <div>
       <PageHeader title="New Call List" description="Build a daily call list and assign it to a rep" />
 
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         <Card className="max-w-3xl p-6">
           {error === "missing_fields" && (
             <p className="mb-4 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
