@@ -74,3 +74,11 @@ export async function updateAppointmentStatusAction(id: string, status: string) 
   });
   revalidatePath("/dashboard/appointments");
 }
+
+export async function deleteAppointmentAction(id: string) {
+  const session = await requireSession();
+  await db.appointment.delete({
+    where: { id, organizationId: session.user.organizationId },
+  });
+  revalidatePath("/dashboard/appointments");
+}

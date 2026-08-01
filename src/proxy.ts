@@ -6,7 +6,10 @@ export default auth(async (req) => {
   const { pathname, search, origin } = req.nextUrl;
 
   // --- Site access gate: one shared password in front of the whole app ---
-  if (isGateEnabled() && !pathname.startsWith("/gate")) {
+  // /api/public/* is exempt — it's the public booking API the marketing site's
+  // anonymous visitors call directly, so it can't sit behind the private-site
+  // password the rest of the app uses.
+  if (isGateEnabled() && !pathname.startsWith("/gate") && !pathname.startsWith("/api/public/")) {
     const ok = await verifyGateToken(req.cookies.get(GATE_COOKIE)?.value);
     if (!ok) {
       const url = new URL("/gate", origin);

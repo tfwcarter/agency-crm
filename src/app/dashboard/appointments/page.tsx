@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Plus, CalendarClock, Video, MapPin } from "lucide-react";
+import { Plus, CalendarClock, Video, MapPin, Trash2 } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireSession } from "@/lib/session";
-import { updateAppointmentStatusAction } from "@/lib/actions/appointments";
+import { updateAppointmentStatusAction, deleteAppointmentAction } from "@/lib/actions/appointments";
 import { PageHeader, Card, Badge, Button } from "@/components/ui/primitives";
+import { ConfirmDeleteForm } from "@/components/dashboard/confirm-delete-form";
 
 const TYPE_LABEL: Record<string, string> = {
   discovery_call: "Discovery Call",
@@ -125,6 +126,14 @@ function ApptRow({ appt }: { appt: ApptWithRelations }) {
             </form>
           </>
         )}
+        <ConfirmDeleteForm
+          action={deleteAppointmentAction.bind(null, appt.id)}
+          confirmText={`Delete "${appt.title}"? This can't be undone.`}
+        >
+          <Button type="submit" size="sm" variant="ghost" aria-label="Delete appointment">
+            <Trash2 size={14} />
+          </Button>
+        </ConfirmDeleteForm>
       </div>
     </Card>
   );
