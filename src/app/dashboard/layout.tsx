@@ -22,10 +22,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <CommandPaletteProvider>
       <WelcomeSplash greeting={greeting} firstName={firstName} orgName={org.name} />
       <div className="relative flex min-h-screen bg-bg">
-        {/* subtle drifting aurora behind the whole shell — shows through gaps between cards */}
+        {/* Ambient survey-map contours behind the whole shell — calm and
+            on-theme, shows through the gaps between cards. */}
         <div className="pointer-events-none fixed inset-0 overflow-hidden">
-          <div className="aurora" style={{ opacity: 0.16 }} />
-          <div className="aurora aurora-2" style={{ opacity: 0.1 }} />
+          <div className="terrain absolute inset-0" style={{ opacity: 0.4 }} />
         </div>
         <Sidebar />
         <div className="relative flex min-w-0 flex-1 flex-col">

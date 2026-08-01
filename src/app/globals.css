@@ -3,71 +3,84 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   Shepherds golden-black scheme — parchment gold on warm black.
-   Matches the Shepherds Web Design & SEO Agency brand. Dark is the
-   premium default; light is a warm parchment variant for the toggle.
+   Shepherds "Field Guide" scheme — cool limestone paper, moss green,
+   and one harvest gold reserved for money & achievement. Ported from
+   the Sales Academy so the CRM reads as the same family. Light is the
+   default; dark is a night-field-guide variant for the toggle.
    ============================================================ */
 
 :root {
-  /* Light — warm parchment with bronze-gold accents */
-  --c-bg: #faf7ee;
-  --c-bg-elevated: #fffdf6;
-  --c-surface: #fffdf6;
-  --c-surface-hover: #f3ecda;
-  --c-border: #e8dfc8;
-  --c-border-strong: #d7c9a9;
-  --c-fg: #221f16;
-  --c-fg-muted: #6b6250;
-  --c-fg-subtle: #9c917a;
+  /* Light — limestone paper ground, chalk cards, slate ink */
+  --c-bg: #f1f2ec;
+  --c-bg-elevated: #f6f7f1;
+  --c-surface: #fafbf7;
+  --c-surface-hover: #eaece3;
+  --c-border: #dcddd3;
+  --c-border-strong: #c8cabd;
+  --c-fg: #1c2620;
+  --c-fg-muted: #55625a;
+  --c-fg-subtle: #8b8677;
 
-  --c-brand: #9a7a26;
-  --c-brand-hover: #b8963f;
-  --c-brand-fg: #fffdf6;
-  --c-brand-soft: #f3e9cd;
+  --c-brand: #35624a;
+  --c-brand-hover: #274a38;
+  --c-brand-fg: #fafbf7;
+  --c-brand-soft: #e4ede6;
 
-  --c-accent: #b8963f;
-  --c-accent-hover: #cfae5c;
+  /* Harvest — reserved for money, positive CTAs, and achievement.
+     accent is the text-safe deep variant so it works as a button ground. */
+  --c-accent: #8a5f16;
+  --c-accent-hover: #a56f1b;
+  --c-accent-fg: #fdf7ea;
 
-  --c-success: #5f7d47;
-  --c-warning: #b8801f;
-  --c-danger: #c0453a;
-  --c-info: #b8996a;
+  --c-success: #35624a;
+  --c-warning: #b57f2a;
+  --c-danger: #a03d2f;
+  --c-info: #3f6b74;
 
-  --shadow-sm: 0 1px 2px rgba(90, 70, 30, 0.06);
-  --shadow-card: 0 1px 2px rgba(90, 70, 30, 0.05), 0 8px 24px -10px rgba(90, 70, 30, 0.16);
-  --shadow-lift: 0 4px 12px -2px rgba(90, 70, 30, 0.12), 0 16px 32px -12px rgba(90, 70, 30, 0.22);
-  --shadow-brand: 0 4px 16px -4px rgba(154, 122, 38, 0.4);
+  /* Soft, green-tinted — pure-black shadows read as dirt on paper. */
+  --shadow-sm: 0 1px 2px rgb(28 38 32 / 0.05);
+  --shadow-card: 0 1px 2px rgb(28 38 32 / 0.05), 0 12px 28px -14px rgb(28 38 32 / 0.14);
+  --shadow-lift: 0 2px 6px rgb(28 38 32 / 0.06), 0 20px 40px -16px rgb(28 38 32 / 0.2);
+  --shadow-brand: 0 6px 18px -6px rgb(53 98 74 / 0.32);
 }
 
 .dark {
-  /* Dark — the premium golden-black: warm ink ground, parchment-gold accent */
-  --c-bg: #0a0a09;
-  --c-bg-elevated: #101010;
-  --c-surface: #16150f;
-  --c-surface-hover: #201e16;
-  --c-border: #2b2820;
-  --c-border-strong: #3a362b;
-  --c-fg: #f3efe2;
-  --c-fg-muted: #aca591;
-  --c-fg-subtle: #837c6c;
+  /* Dark — night field guide: deep pine-slate ground, brightened moss + harvest */
+  --c-bg: #12140f;
+  --c-bg-elevated: #171a14;
+  --c-surface: #1b1f18;
+  --c-surface-hover: #232821;
+  --c-border: #2d3329;
+  --c-border-strong: #3b4235;
+  --c-fg: #edf0e6;
+  --c-fg-muted: #a6afa1;
+  --c-fg-subtle: #798374;
 
-  --c-brand: #e6d29b;
-  --c-brand-hover: #f3e7bd;
-  --c-brand-fg: #14130d;
-  --c-brand-soft: #2a2416;
+  --c-brand: #82b28d;
+  --c-brand-hover: #9ac7a3;
+  --c-brand-fg: #10120d;
+  --c-brand-soft: #21301f;
 
-  --c-accent: #cfae5c;
-  --c-accent-hover: #e9cf8a;
+  --c-accent: #d9a441;
+  --c-accent-hover: #e6b656;
+  --c-accent-fg: #17160f;
 
-  --c-success: #9db584;
-  --c-warning: #e9cf8a;
-  --c-danger: #e0776b;
-  --c-info: #dcc9a0;
+  --c-success: #82b28d;
+  --c-warning: #d9a441;
+  --c-danger: #e07a6a;
+  --c-info: #74a7b1;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
-  --shadow-lift: 0 4px 14px -2px rgba(0, 0, 0, 0.5), 0 20px 44px -14px rgba(0, 0, 0, 0.7);
-  --shadow-brand: 0 6px 22px -6px rgba(230, 210, 155, 0.35);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.45);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 30px -14px rgb(0 0 0 / 0.7);
+  --shadow-lift: 0 4px 14px -2px rgb(0 0 0 / 0.55), 0 22px 46px -16px rgb(0 0 0 / 0.75);
+  --shadow-brand: 0 6px 20px -6px rgb(130 178 141 / 0.3);
+}
+
+@theme {
+  /* Softer field-guide radii — buttons/inputs and cards were previously
+     undefined (rendering square); these restore intentional rounding. */
+  --radius-control: 0.625rem;
+  --radius-card: 0.875rem;
 }
 
 @theme inline {
@@ -86,25 +99,34 @@
   --color-brand-soft: var(--c-brand-soft);
   --color-accent: var(--c-accent);
   --color-accent-hover: var(--c-accent-hover);
+  --color-accent-fg: var(--c-accent-fg);
   --color-success: var(--c-success);
   --color-warning: var(--c-warning);
   --color-danger: var(--c-danger);
   --color-info: var(--c-info);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-instrument);
+  --font-display: var(--font-fraunces);
+  --font-mono: var(--font-jetbrains);
 }
 
 body {
   background: var(--c-bg);
   color: var(--c-fg);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* Fraunces (the display serif) carries the big headings; small uppercase
+   labels are h3/spans and stay in the sans, so this is scoped to h1/h2. */
+h1,
+h2 {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  letter-spacing: -0.015em;
+}
+
 ::selection {
-  background: var(--c-brand);
-  color: var(--c-brand-fg);
+  background: var(--c-brand-soft);
+  color: var(--c-brand-hover);
 }
 
 /* Keep browser autofill on-theme — override the pale blue/yellow background
@@ -196,7 +218,7 @@ select:-webkit-autofill {
   inset: -40%;
   pointer-events: none;
   filter: blur(64px);
-  opacity: 0.6;
+  opacity: 0.42;
   background:
     radial-gradient(30% 30% at 18% 24%, color-mix(in srgb, var(--c-brand) 62%, transparent), transparent 70%),
     radial-gradient(26% 26% at 80% 28%, color-mix(in srgb, var(--c-accent) 58%, transparent), transparent 70%),
@@ -250,13 +272,11 @@ select:-webkit-autofill {
 .gradient-text {
   background: linear-gradient(
     100deg,
-    var(--c-accent) 0%,
-    var(--c-brand) 28%,
-    color-mix(in srgb, var(--c-brand-hover) 85%, #ffffff) 50%,
-    var(--c-brand) 72%,
-    var(--c-accent) 100%
+    var(--c-brand) 0%,
+    var(--c-warning) 50%,
+    var(--c-brand) 100%
   );
-  background-size: 260% auto;
+  background-size: 220% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -349,9 +369,25 @@ select:-webkit-autofill {
 }
 .shake { animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
 
+/* --- Ambient terrain — survey-map contour rings, from the Sales Academy.
+   Low-contrast and very slow: gives the shell life without competing with
+   dense data the way a blurred aurora does. Pure CSS. --- */
+@keyframes terrain-drift {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 120px 90px, -100px 70px; }
+}
+.terrain {
+  background-image:
+    repeating-radial-gradient(circle at 12% 18%, transparent 0 44px, color-mix(in srgb, var(--c-brand) 22%, transparent) 44px 45px),
+    repeating-radial-gradient(circle at 88% 74%, transparent 0 52px, color-mix(in srgb, var(--c-fg-muted) 18%, transparent) 52px 53px);
+  opacity: 0.5;
+  animation: terrain-drift 90s linear infinite alternate;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .stagger > *,
   .aurora,
+  .terrain,
   .shimmer::after,
   .gradient-text,
   .glow-pulse,

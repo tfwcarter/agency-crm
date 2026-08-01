@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
 
-const SERIF = "Georgia, 'Times New Roman', 'Playfair Display', serif";
+const SERIF = "var(--font-fraunces), ui-serif, Georgia, serif";
 
 /**
- * Square Shepherd monogram tile — for compact/square placements
- * (collapsed sidebar, favicon-style spots). Gold serif "S" on a dark tile
- * with a hairline gold edge, so it reads in both themes.
+ * Square Shepherd monogram tile — for compact/square placements (collapsed
+ * sidebar, favicon-style spots). A moss "S" on a soft-moss tile with a hairline
+ * moss edge, so it reads in both the light and dark field-guide themes.
  */
 export function BrandMark({ size = 28, className }: { size?: number; className?: string }) {
   return (
@@ -16,10 +16,10 @@ export function BrandMark({ size = 28, className }: { size?: number; className?:
         height: size,
         fontSize: size * 0.6,
         fontFamily: SERIF,
-        fontWeight: 700,
+        fontWeight: 600,
         color: "var(--c-brand)",
         background: "var(--c-brand-soft)",
-        border: "1px solid color-mix(in srgb, var(--c-brand) 45%, transparent)",
+        border: "1px solid color-mix(in srgb, var(--c-brand) 40%, transparent)",
         boxShadow: "var(--shadow-brand)",
       }}
     >
@@ -29,11 +29,10 @@ export function BrandMark({ size = 28, className }: { size?: number; className?:
 }
 
 /**
- * Full SHEPHERDS wordmark, recreated as crisp SVG so it scales to any size and
- * inherits the theme's gold. Parchment-gold "SHEPHERDS" framed by two rules,
- * with the "WEB DESIGN & SEO AGENCY" line breaking the lower rule. Set
- * `tagline` to include the brand promise beneath (only where there's vertical
- * room — splash, login).
+ * Full SHEPHERDS wordmark as crisp SVG so it scales to any size and inherits the
+ * theme. Set in Fraunces on the field-guide palette — slate wordmark, muted
+ * subtitle, hairline rules — matching the Sales Academy lockup. `tagline` adds
+ * the brand promise beneath, where there's vertical room (splash, login).
  */
 export function LogoLockup({
   height = 30,
@@ -58,7 +57,7 @@ export function LogoLockup({
         style={{ display: "block" }}
       >
         {/* top rule */}
-        <rect x="40" y="14" width="1220" height="5" fill="var(--c-fg)" />
+        <rect x="40" y="16" width="1220" height="3" fill="var(--c-border-strong)" />
 
         {/* wordmark */}
         <text
@@ -66,17 +65,17 @@ export function LogoLockup({
           y="170"
           textAnchor="middle"
           fontFamily={SERIF}
-          fontWeight={700}
+          fontWeight={600}
           fontSize="158"
-          letterSpacing="2"
-          fill="var(--c-brand)"
+          letterSpacing="1"
+          fill="var(--c-fg)"
         >
           SHEPHERDS
         </text>
 
         {/* lower rule, broken where the subtitle sits */}
-        <rect x="40" y="188" width="300" height="4" fill="var(--c-fg)" />
-        <rect x="960" y="188" width="300" height="4" fill="var(--c-fg)" />
+        <rect x="40" y="189" width="300" height="2" fill="var(--c-border-strong)" />
+        <rect x="960" y="189" width="300" height="2" fill="var(--c-border-strong)" />
 
         {/* subtitle across the lower rule */}
         <text
@@ -85,9 +84,9 @@ export function LogoLockup({
           textAnchor="middle"
           fontFamily={SERIF}
           fontWeight={600}
-          fontSize="43"
-          letterSpacing="3"
-          fill="var(--c-fg)"
+          fontSize="41"
+          letterSpacing="4"
+          fill="var(--c-fg-muted)"
         >
           WEB DESIGN &amp; SEO AGENCY
         </text>

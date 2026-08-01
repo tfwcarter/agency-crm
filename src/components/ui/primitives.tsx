@@ -81,7 +81,7 @@ export function Button({
     secondary: "bg-surface-hover text-fg border border-border hover:bg-border hover:border-border-strong",
     ghost: "text-fg-muted hover:bg-surface-hover hover:text-fg",
     danger: "bg-danger/10 text-danger hover:bg-danger/20",
-    accent: "bg-accent text-white shadow-[0_4px_14px_-4px_rgba(16,185,129,0.45)] hover:bg-accent-hover",
+    accent: "bg-accent text-accent-fg shadow-[var(--shadow-card)] hover:bg-accent-hover",
   };
   const sizes: Record<string, string> = {
     sm: "px-2.5 py-1.5 text-xs",
